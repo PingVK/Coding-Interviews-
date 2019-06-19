@@ -11,22 +11,17 @@ class Q1:
 
     def s1(self) -> bool:
         # 时间复杂度n，空间复杂度1
-        for i in range(len(self.lst)):
+        i = 0
+        while i < len(self.lst):
             if self.lst[i] == i:
+                i += 1
                 continue
-            if self.lst[i] != self.lst[self.lst[i]]:
-                self.lst[i], self.lst[self.lst[i]] = self.lst[self.lst[i]], self.lst[i]
+            j = self.lst[i]
+            if self.lst[i] != self.lst[self. lst[i]]:
+                self.lst[i], self.lst[j] = self.lst[j], self.lst[i]
             else:
                 return True
         return False
-
-    def s2(self) -> bool:
-        # 只能判断
-        s = sum(range(len(self.lst)))
-        count = 0
-        for i in self.lst:
-            count += i
-        return True if count != s else False
 
 
 class Q2:
@@ -34,39 +29,27 @@ class Q2:
         self.lst = lst
 
     def s1(self):
-        def countRange(lst, start, end):
-            count = 0
-            for i in lst:
-                if start <= i <= end:
-                    count += 1
-            return count
-
-        start,  end = 0, len(self.lst)-1
-        while end >= start:
-            middle = (end + start) // 2 + start
-            count = countRange(self.lst, start, middle)
-            if end == start:
-                if count > 1:
-                    return start
-                else:
-                    break
-            if count > end - start + 1:
-                end = middle
+        dic = dict()
+        nums = []
+        for i in self.lst:
+            if i not in dic:
+                dic[i] = 1
             else:
-                start = middle + 1
-        return -1
+                if dic[i] == 1:
+                    nums.append(i)
+                dic[i] += 1
+        return tuple(nums)
 
 
 if __name__ == '__main__':
     cases = [
-        ([1, 2, 3, 4, 5, 0], 'False, -1'),
-        ([2, 3, 5, 4, 3, 2, 6, 7], 'True, 2, 3')
+        ([1, 2, 3, 4, 5, 0], 'False, ()'),
+        ([2, 3, 5, 4, 3, 2, 6, 7], 'True, (2, 3)')
     ]
     for case in cases:
+        print('*'*20)
+        print(case)
         q1 = Q1(case[0])
         q2 = Q2(case[0])
-        print('Output:', str(q1.s1()), '\t\t', 'Expected:', case[1])
-        print('Output:', str(q1.s2()), '\t\t', 'Expected:', case[1])
-        print('Output:', str(q2.s1()), '\t\t', 'Expected:', case[1])
-
-
+        print('Output:', str(q1.s1()), '\nExpected:', case[1], '\n')
+        print('Output:', str(q2.s1()), '\nExpected:', case[1], '\n')
