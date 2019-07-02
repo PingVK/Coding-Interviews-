@@ -18,6 +18,13 @@ class LList:
     def __init__(self):
         self._head = None
 
+    def __iter__(self):
+        """实现迭代方法"""
+        p = self._head
+        while p is not None:
+            yield p.elem
+            p = p.next
+
     def is_empty(self):
         """是否为空"""
         return self._head is None
