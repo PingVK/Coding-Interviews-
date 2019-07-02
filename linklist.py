@@ -17,6 +17,7 @@ class LList:
     """单向链表"""
     def __init__(self):
         self._head = None
+        self._length = 0
 
     def __iter__(self):
         """实现迭代方法"""
@@ -25,6 +26,13 @@ class LList:
             yield p.elem
             p = p.next
 
+    def __len__(self):
+        """返回元素个数"""
+        return self._length
+
+    def __str__(self):
+        return ', '.join(map(str, self))
+
     def is_empty(self):
         """是否为空"""
         return self._head is None
@@ -32,6 +40,7 @@ class LList:
     def prepend(self, elem):
         """表头插入数据"""
         self._head = LNode(elem, self._head)
+        self._length += 1
 
     def pop(self):
         """弹出表头数据"""
@@ -39,17 +48,20 @@ class LList:
             raise LinkedListUnderflow("in pop")
         e = self._head.elem
         self._head = self._head.next
+        self._length -= 1
         return e
 
     def append(self, elem):
-        """后端插入数据"""
+        """尾部插入数据"""
         if self._head is None:
             self._head = LNode(elem)
+            self._length += 1
             return
         p = self._head
         while p.next:
             p = p.next
         p.next = LNode(elem)
+        self._length += 1
 
     def pop_last(self):
         """弹出尾部数据"""
@@ -58,12 +70,14 @@ class LList:
         if self._head.next is None:
             e = self._head.elem
             self._head = None
+            self._length -= 1
             return e
         p = self._head
         while p.next.next is not None:
             p = p.next
         e = p.next.elem
         p.next = None
+        self._length -= 1
         return e
 
     def find(self, pred):
@@ -74,24 +88,38 @@ class LList:
                 return p.elem
             p = p.next
 
-    def print_all(self):
-        """顺序打印链表"""
-        p = self._head
-        while p is not None:
-            print(p.elem, end='')
-            if p.next is not None:
-                print(', ', end='')
-            p = p.next
-        print()
+    # def print_all(self):
+    #     """顺序打印链表"""
+    #     p = self._head
+    #     while p is not None:
+    #         print(p.elem, end='')
+    #         if p.next is not None:
+    #             print(', ', end='')
+    #         p = p.next
+    #     print()
+
+    def reverse(self):
+        """反转链表"""
+        p = None
+        while self._head is not None:
+            q = self._head
+            self._head = q.next
+            q.next = p
+            p = q
+        self._head = p
 
 
 if __name__ == '__main__':
     link = LList()
     for i in range(10):
         link.append(i)
-    link.print_all()
+    print(link)
     print("第一个大于5的值：", link.find(lambda x: x > 5))
     link.prepend(10)
     print(link.pop())
     print(link.pop_last())
-    link.print_all()
+    print('元素个数：', len(link))
+    print(link)
+    print("反转链表：")
+    link.reverse()
+    print(link)
