@@ -1,3 +1,7 @@
+"""
+page 58, problem 6
+倒序打印链表节点值
+"""
 from linklist import LList
 
 
