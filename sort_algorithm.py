@@ -6,40 +6,50 @@
 from random import randint
 
 
+registry = []
+def register(func):
+    registry.append(func)
+    return func
+
+
+@register
 def bubble_sort(lst):
     """冒泡排序"""
     for i in range(len(lst)-1):
         found = False
         for j in range(1, len(lst)-i):
-            if lst[i-1] > lst[i]:
-                lst[i-1], lst[i] = lst[i], lst[i-1]
+            if lst[j-1] > lst[j]:
+                lst[j-1], lst[j] = lst[j], lst[j-1]
                 found = True
         if not found:
             break
 
 
+@register
 def insert_sort(lst):
     """插入排序"""
     for i in range(1, len(lst)):
         x = lst[i]
-        j = 1
-        while j > 0 and lst[j-1] > lst[j]:
+        j = i
+        while j > 0 and lst[j-1] > x:
             lst[j] = lst[j-1]
             j -= 1
         lst[j] = x
 
 
+@register
 def select_sort(lst):
     """选择排序"""
     for i in range(len(lst)-1):
         x = i
         for j in range(i, len(lst)):
-            if lst[j] < lst[i]:
+            if lst[j] < lst[x]:
                 x = j
         if i != x:
             lst[i], lst[x] = lst[x], lst[i]
 
 
+@register
 def heap_sort(lst):
     """堆排序"""
     def siftdown(elems, e, begin, end):
@@ -62,6 +72,7 @@ def heap_sort(lst):
         siftdown(lst, e, 0, i)
 
 
+@register
 def quick_sort1(lst):
     """快速排序"""
     def qsort_rec(lst, l, r):
@@ -86,6 +97,7 @@ def quick_sort1(lst):
     qsort_rec(lst, 0, len(lst)-1)
 
 
+@register
 def quick_sort2(lst):
     """快速排序"""
     def qsort_rec(lst, begin, end):
@@ -102,13 +114,39 @@ def quick_sort2(lst):
     qsort_rec(lst, 0, len(lst)-1)
 
 
+@register
 def merge_sort(lst):
     """归并排序"""
     def merge(ifrom, ito, low, mid, high):
-        pass
+        i, j, k = low, mid, low
+        while i < mid and j < high:
+            if ifrom[i] <= ifrom[j]:
+                ito[k] = ifrom[i]
+                i += 1
+            else:
+                ito[k] = ifrom[j]
+                j += 1
+            k += 1
+        while i < mid:
+            ito[k] = ifrom[i]
+            i += 1
+            k += 1
+        while j < high:
+            ito[k] = ifrom[j]
+            j += 1
+            k += 1
 
     def merge_pass(ifrom, ito, llen, slen):
-        pass
+        i = 0
+        while i+2*slen < llen:
+            merge(ifrom, ito, i, i+slen, i+2*slen)
+            i += 2*slen
+        if i+slen < llen:
+            merge(ifrom, ito, i, i+slen, llen)
+        else:
+            for j in range(i, llen):
+                ito[j] = ifrom[j]
+
     slen, llen = 1, len(lst)
     temp_list = [None]*llen
     while slen < llen:
@@ -121,5 +159,9 @@ def merge_sort(lst):
 if __name__ == '__main__':
     case = [randint(-50, 49) for x in range(10)]
     print(case)
-    quick_sort2(case)
-    print(case)
+    sorted_case = sorted(case)
+    print(sorted_case)
+    for algorithm in registry:
+        case_copy = case[:]
+        algorithm(case_copy)
+        print('%11s: %r%10r' % (algorithm.__name__, case_copy, case_copy == sorted_case))
